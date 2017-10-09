@@ -7,6 +7,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import java.util.*
+
+// Available moves
+private var availableMoves = ArrayList<Int>()
 
 // Player1 moves
 private var player1 = ArrayList<Int>()
@@ -20,12 +24,22 @@ private var activePlayer = 1
 // Game winner
 private var winner = -1
 
+// Random instance
+private val random = Random()
+
 // Main activity class
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Populate available moves
+        for (item in 1..9) {
+            availableMoves.add(item)
+        }
+
     }
 
     // Button click event
@@ -65,6 +79,9 @@ class MainActivity : AppCompatActivity() {
             // Store player1 move
             player1.add(cellID)
 
+            // Remove move from available moves
+            availableMoves.remove(cellID)
+
             // Customise button selected
             selectedButton.text = "X"
             selectedButton.setBackgroundColor(Color.GREEN)
@@ -72,10 +89,16 @@ class MainActivity : AppCompatActivity() {
             // Change active player
             activePlayer = 2
 
+            // Auto play
+            autoPlay()
+
         } else {
 
             // Store player1 move
             player2.add(cellID)
+
+            // Remove move from available moves
+            availableMoves.remove(cellID)
 
             // Customise button selected
             selectedButton.text = "O"
@@ -156,6 +179,40 @@ class MainActivity : AppCompatActivity() {
         // Winner Message
         if (winner != -1)
             Toast.makeText(this, "Player ${winner} won the game !", Toast.LENGTH_LONG).show()
+
+    }
+
+    // Auto play
+    private fun autoPlay() {
+
+        // Get random index
+        val index = random.nextInt(availableMoves.size - 0) + 1
+
+        // Get cellID
+        val cellID = availableMoves[index]
+
+        // Button selected
+        val selectedButton:Button?
+
+        // Get button ID
+        when (cellID) {
+
+            1 -> selectedButton = findViewById(R.id.bu1) as Button
+            2 -> selectedButton = findViewById(R.id.bu2) as Button
+            3 -> selectedButton = findViewById(R.id.bu3) as Button
+            4 -> selectedButton = findViewById(R.id.bu4) as Button
+            5 -> selectedButton = findViewById(R.id.bu5) as Button
+            6 -> selectedButton = findViewById(R.id.bu6) as Button
+            7 -> selectedButton = findViewById(R.id.bu7) as Button
+            8 -> selectedButton = findViewById(R.id.bu8) as Button
+            9 -> selectedButton = findViewById(R.id.bu9) as Button
+
+            else -> selectedButton = findViewById(R.id.bu1) as Button
+
+        }
+
+        // Play the game
+        selectButton(cellID, selectedButton)
 
     }
 
